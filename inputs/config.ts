@@ -3,6 +3,9 @@ const config = {
   capsolverAPIKey: '',
   ref: '',
   proxyType: 'http', // socks5 http
+  proxyRefreshLink: '',
+  sleepAfterRefresh: 5000,
+  isRotatingProxy: false, // true false
   customDelay: 50,
   captchaDelay: 10000,
 };

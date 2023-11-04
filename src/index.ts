@@ -67,7 +67,8 @@ async function reg(email: any, proxy: string) {
     httpsAgent:
       config.proxyType === 'http' ? new HttpsProxyAgent(`http://${proxy}`) : new SocksProxyAgent(`socks5://${proxy}`),
   });
-
+  config.isRotatingProxy ? await axios.get(config.proxyRefreshLink) : null;
+  config.isRotatingProxy ? await delay(config.sleepAfterRefresh) : null;
   const res1 = await axios.post('https://api.capsolver.com/createTask', {
     clientKey: config.capsolverAPIKey,
     task: {
@@ -85,6 +86,7 @@ async function reg(email: any, proxy: string) {
     taskId: taskId,
   });
   const captcha = res2.data.solution.gRecaptchaResponse;
+  console.log(captcha);
   const FormData = require('form-data');
   const formData = new FormData();
   const genName = () => {
@@ -131,7 +133,7 @@ function regRecursive(emails: any, proxies: any, index = 0, numThreads = 4) {
   }
 
   const worker = new Worker(__filename, {
-    workerData: { email: emails[index], proxy: proxies[index] },
+    workerData: { email: emails[index], proxy: config.isRotatingProxy ? proxies[0] : proxies[index] },
   });
   worker.on('message', (message: any) => {
     console.log(message);
